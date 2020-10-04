@@ -6,7 +6,16 @@
 </head>
 <body>
 
-<form th:action="@{/"
+<form th:action="@{/postAccount}" method="post">
+
+    <label>Firstname
+        <input name="firstName" type="text">
+    </label>
+    <input name="lastName" type="text">
+    <input type="submit" value="Create account">
+
+
+</form>
 
 
 </body>
