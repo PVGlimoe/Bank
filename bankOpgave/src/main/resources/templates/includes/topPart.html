@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Top Part</title>
+    <link rel="stylesheet" type="text/css" href="/topPart.css">
 </head>
 <body>
+
+<div th:fragment="topPart">
+    <div class="topContainer">
+        <img class="topImage" src="/images/header.jpg"/>
+        <p id="topPartText">Bank Lé Phill</p>
+    </div>
+
+</div>
 
 </body>
 </html>
