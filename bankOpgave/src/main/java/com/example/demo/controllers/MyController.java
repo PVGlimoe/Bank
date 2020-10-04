@@ -10,4 +10,14 @@ public class MyController {
     public String index(){
         return "index";
     }
+
+    @GetMapping("/createAccount")
+    public String createAccount(){
+        return "createAccount";
+    }
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
 }
