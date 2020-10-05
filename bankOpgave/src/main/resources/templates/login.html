@@ -5,6 +5,24 @@
     <title>Login</title>
 </head>
 <body>
-her kan du logge ind
+
+<div>
+    <h2>Hi welcome back, please enter your login information's.</h2>
+    <form th:action="@{/postLogin}" method="post">
+
+        <label>User Id
+            <input name="id" type="text">
+        </label>
+        <br>
+        <label>Password
+            <input name="password" type="text">
+        </label>
+        <br>
+        <input type="submit" value="Login">
+
+    </form>
+</div>
+
+
 </body>
 </html>
