@@ -7,6 +7,7 @@ public class Customer {
     private String lastName;
     private int id;
     private String password;
+    private int balance = 0;
     static int customerId = 0;
 
 
@@ -34,6 +35,13 @@ public class Customer {
         return password;
     }
 
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
 
     @Override
     public String toString() {
