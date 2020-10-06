@@ -5,6 +5,21 @@
     <title>Transfer money</title>
 </head>
 <body>
+<div>
+    <form th:action="@{/postTransfer}" method="post">
+        <label>Amount to transfer
+            <input name="transferAmount" type="text">
+        </label>
+        <br>
+        <label>User id to transfer to
+            <input name="receivingUserId" type="text">
+        </label>
+        <br>
+        <input type="submit" value="Confirm">
+    </form>
+
+
+</div>
 
 </body>
 </html>

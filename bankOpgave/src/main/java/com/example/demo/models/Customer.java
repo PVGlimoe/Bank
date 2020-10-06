@@ -8,7 +8,7 @@ public class Customer {
     private int id;
     private String password;
     private int balance = 0;
-    static int customerId = 0;
+    public static int customerId = 0;
 
 
     public Customer(String firstName, String lastName, String password){
@@ -42,6 +42,7 @@ public class Customer {
     public void setBalance(int balance) {
         this.balance = balance;
     }
+
 
     @Override
     public String toString() {

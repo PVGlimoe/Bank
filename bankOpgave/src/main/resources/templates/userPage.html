@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>User page</title>
+    <link rel="stylesheet" type="text/css" href="/topPart.css">
 </head>
 <body>
-hæv, indsæt penge, overfør
+<div th:replace="/includes/topPart :: topPart"></div>
+
+
+<h1>Your bank information's</h1>
+<p>First name: <span th:text="${firstName}"></span></p>
+<p>Last name: <span th:text="${lastName}"></span></p>
+<p>Balance: <span th:text="${balance}"></span></p>
+
+
 </body>
 </html>

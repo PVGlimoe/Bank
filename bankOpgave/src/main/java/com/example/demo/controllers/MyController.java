@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 @Controller
@@ -26,12 +27,14 @@ public class MyController {
     }
 
     @GetMapping("/createAccount")
-    public String createAccount() {
+    public String createAccount(Model model) throws NoSuchFieldException, IllegalAccessException  {
+        int personalId =(int) Customer.class.getField("customerId").get(null) + 1;
+        model.addAttribute("personalId", personalId);
         return "createAccount";
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(){
         return "login";
     }
 
@@ -42,7 +45,7 @@ public class MyController {
         String password = request.getParameter("password");
         Customer customer = new Customer(firstName, lastName, password);
         customerService.addCustomerToArrayList(customer);
-        return "redirect:/";
+        return "redirect:/login";
     }
 
     @PostMapping("/postLogin")
@@ -60,14 +63,12 @@ public class MyController {
 
 
     @GetMapping("/userPage")
-    public String userPage(){
+    public String userPage(Model model){
+        Customer activeUser = customerService.getListOfCustomers().get(activeUserId - 1);
+        model.addAttribute("firstName", activeUser.getFirstName());
+        model.addAttribute("lastName", activeUser.getLastName());
+        model.addAttribute("balance", activeUser.getBalance());
         return "userPage";
-    }
-
-    @GetMapping("/test")
-    public String test(Model model){
-        model.addAttribute("customers", customerService.getListOfCustomers());
-        return "test";
     }
 
     public Customer activeCustomer(){
@@ -76,7 +77,7 @@ public class MyController {
                 return customer;
             }
         }
-        return customerService.getListOfCustomers().get(0);
+        return null;
     }
 
     @GetMapping("/insert")
@@ -89,7 +90,42 @@ public class MyController {
         int insertAmount = Integer.parseInt(request.getParameter("insertAmount"));
         mechanicsService.insertMoney(activeCustomer(), insertAmount);
 
-        return "userPage";
+        return "redirect:/userPage";
+    }
+
+    @GetMapping("/withdraw")
+    public String withdraw(){
+        return "withdraw";
+    }
+
+    @PostMapping("/postWithdraw")
+    public String postWithdraw(HttpServletRequest request){
+        int withdrawAmount = Integer.parseInt(request.getParameter("withdrawAmount"));
+        mechanicsService.withdrawMoney(activeCustomer(), withdrawAmount);
+        return "redirect:/userPage";
+    }
+
+    @GetMapping("/transfer")
+    public String transfer(){
+        return "transfer";
+    }
+
+    public Customer transferReceivingCustomer(int userID){
+        for (Customer customer : customerService.getListOfCustomers()){
+            if (customer.getId() == userID) {
+                return customer;
+            }
+        }
+        return null;
+
+    }
+    @PostMapping("/postTransfer")
+    public String postTransfer(HttpServletRequest request){
+        int transferAmount = Integer.parseInt(request.getParameter("transferAmount"));
+        Customer payingCustomer = activeCustomer();
+        Customer receivingCustomer = transferReceivingCustomer(Integer.parseInt(request.getParameter("receivingUserId")));
+        mechanicsService.transferMoney(payingCustomer, receivingCustomer, transferAmount);
+        return "redirect:/userPage";
     }
 
 }

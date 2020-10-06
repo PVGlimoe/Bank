@@ -6,5 +6,17 @@
 </head>
 <body>
 
+<div>
+    <form th:action="@{/postWithdraw}" method="post">
+        <label>Amount to withdraw
+            <input name="withdrawAmount" type="text">
+        </label>
+        <br>
+        <input type="submit" value="Confirm">
+    </form>
+
+
+</div>
+
 </body>
 </html>

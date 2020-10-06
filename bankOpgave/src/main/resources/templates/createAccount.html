@@ -6,6 +6,10 @@
 </head>
 <body>
 
+<div >
+    <p>Your Personal user ID is: <span th:text="${personalId}"></span></p>
+</div>
+
 <form th:action="@{/postAccount}" method="post">
 
     <label>First name
@@ -17,7 +21,7 @@
     </label>
     <br>
     <label>Password
-        <input name="password" type="text">
+        <input name="password" type="password">
     </label>
     <br>
     <input type="submit" value="Create account">
