@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Transfer money</title>
+    <link rel="stylesheet" type="text/css" href="/topPart.css">
+
 </head>
 <body>
+<div th:replace="/includes/topPicture :: topPicture"></div>
 <div>
     <form th:action="@{/postTransfer}" method="post">
         <label>Amount to transfer
