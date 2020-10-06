@@ -3,22 +3,18 @@ package com.example.demo.controllers;
 import com.example.demo.models.Customer;
 import com.example.demo.services.CustomerService;
 import com.example.demo.services.MechanicsService;
-import org.apache.catalina.filters.ExpiresFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 @Controller
 public class MyController {
 
     CustomerService customerService = new CustomerService();
     MechanicsService mechanicsService = new MechanicsService();
-    private int activeUserId;
 
 
     @GetMapping("/")
@@ -43,8 +39,7 @@ public class MyController {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String password = request.getParameter("password");
-        Customer customer = new Customer(firstName, lastName, password);
-        customerService.addCustomerToArrayList(customer);
+        customerService.addCustomer(firstName, lastName, password);
         return "redirect:/login";
     }
 
@@ -53,8 +48,8 @@ public class MyController {
         String password = request.getParameter("password");
         int id = Integer.parseInt(request.getParameter("id"));
         boolean loginStatus = customerService.checkLoginInfo(id, password);
-        activeUserId = id;
         if (loginStatus){
+            customerService.setActiveUser(customerService.getCustomerById(id));
             return "redirect:/userPage";
         } else {
             return "redirect:/login";
@@ -64,20 +59,13 @@ public class MyController {
 
     @GetMapping("/userPage")
     public String userPage(Model model){
-        Customer activeUser = customerService.getListOfCustomers().get(activeUserId - 1);
-        model.addAttribute("firstName", activeUser.getFirstName());
-        model.addAttribute("lastName", activeUser.getLastName());
-        model.addAttribute("balance", activeUser.getBalance());
+        Customer activeUser = customerService.getActiveUser();
+        model.addAttribute("user", activeUser);
         return "userPage";
     }
 
     public Customer activeCustomer(){
-        for (Customer customer : customerService.getListOfCustomers()){
-            if (customer.getId() == activeUserId) {
-                return customer;
-            }
-        }
-        return null;
+        return customerService.getActiveUser();
     }
 
     @GetMapping("/insert")
@@ -88,7 +76,7 @@ public class MyController {
     @PostMapping("/postInsert")
     public String insert(HttpServletRequest request){
         int insertAmount = Integer.parseInt(request.getParameter("insertAmount"));
-        mechanicsService.insertMoney(activeCustomer(), insertAmount);
+        mechanicsService.insertMoney(customerService.getActiveUser(), insertAmount);
 
         return "redirect:/userPage";
     }
@@ -101,7 +89,7 @@ public class MyController {
     @PostMapping("/postWithdraw")
     public String postWithdraw(HttpServletRequest request){
         int withdrawAmount = Integer.parseInt(request.getParameter("withdrawAmount"));
-        mechanicsService.withdrawMoney(activeCustomer(), withdrawAmount);
+        mechanicsService.withdrawMoney(customerService.getActiveUser(), withdrawAmount);
         return "redirect:/userPage";
     }
 
@@ -110,20 +98,12 @@ public class MyController {
         return "transfer";
     }
 
-    public Customer transferReceivingCustomer(int userID){
-        for (Customer customer : customerService.getListOfCustomers()){
-            if (customer.getId() == userID) {
-                return customer;
-            }
-        }
-        return null;
 
-    }
     @PostMapping("/postTransfer")
     public String postTransfer(HttpServletRequest request){
         int transferAmount = Integer.parseInt(request.getParameter("transferAmount"));
-        Customer payingCustomer = activeCustomer();
-        Customer receivingCustomer = transferReceivingCustomer(Integer.parseInt(request.getParameter("receivingUserId")));
+        Customer payingCustomer = customerService.getActiveUser();
+        Customer receivingCustomer = customerService.getCustomerById(Integer.parseInt(request.getParameter("receivingUserId")));
         mechanicsService.transferMoney(payingCustomer, receivingCustomer, transferAmount);
         return "redirect:/userPage";
     }
